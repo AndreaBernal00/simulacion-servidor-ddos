@@ -1,0 +1,160 @@
+---
+title: "Simulación del desempeño de un servidor bajo tráfico DDoS"
+author: "Andrea Fernanda Bernal Forero - Cristian - Jenifer"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+---
+
+# Introducción
+
+Este proyecto presenta un modelo de Simulación de Sistemas de Eventos Discretos (SSED) para analizar el desempeño de un servidor bajo diferentes condiciones de tráfico de red, incluyendo tráfico benigno, sospechoso y ataques DDoS.
+
+La simulación utiliza datos reales provenientes del dataset BCCC-cPacket-Cloud-DDoS-2024, con el objetivo de evaluar el comportamiento del servidor ante distintas capacidades experimentales y medir métricas como congestión, exceso de carga y flujos procesados.
+
+El modelo no busca detectar ataques ni implementar técnicas de machine learning, sino representar el impacto que tiene el tráfico sobre el desempeño del servidor utilizando procesos estocásticos y simulación basada en eventos discretos.
+
+# Objetivos
+
+## Objetivo general
+
+Simular el desempeño de un servidor bajo diferentes condiciones de tráfico de red utilizando un modelo SSED alimentado con datos reales de tráfico DDoS.
+
+## Objetivos específicos
+
+- Analizar estadísticamente el comportamiento temporal del tráfico de red.
+- Construir un modelo estocástico basado en eventos discretos.
+- Evaluar el comportamiento del servidor bajo distintas capacidades experimentales.
+- Comparar datos reales y simulados mediante técnicas estadísticas y visuales.
+- Analizar métricas de congestión y exceso de carga.
+
+# Dataset utilizado
+
+El proyecto utiliza información del dataset:
+
+- BCCC-cPacket-Cloud-DDoS-2024
+- Behaviour-Centric Cybersecurity Center (BCCC)
+- York University
+
+Las observaciones fueron agregadas por ventanas de 1 segundo para construir la variable:
+
+\[
+X_s(t)
+\]
+
+la cual representa el número de flujos observados por segundo bajo una condición de tráfico específica.
+
+# Modelo conceptual
+
+El sistema se modela mediante tres estados principales:
+
+- Benign
+- Suspicious
+- Attack
+
+Para cada segundo simulado se generan flujos de llegada:
+
+\[
+X_s(t)
+\]
+
+El servidor posee una capacidad máxima:
+
+\[
+\mu
+\]
+
+Los flujos procesados se definen como:
+
+\[
+P(t)=\min(X_s(t),\mu)
+\]
+
+El exceso de tráfico se calcula como:
+
+\[
+E(t)=\max(0,X_s(t)-\mu)
+\]
+
+Existe congestión cuando:
+
+\[
+E(t)>0
+\]
+
+# Parámetros experimentales
+
+Se evaluaron tres capacidades del servidor:
+
+- \(\mu = 6\)
+- \(\mu = 20\)
+- \(\mu = 100\)
+
+Cada escenario fue ejecutado mediante:
+
+- 100 réplicas Monte Carlo
+- Horizonte temporal de 28800 segundos
+- Ventanas de simulación de 1 segundo
+
+# Ejecución de scripts
+
+Los siguientes scripts contienen:
+
+- Preparación y análisis exploratorio de datos
+- Implementación del simulador SSED
+- Diseño experimental, validación y resultados
+
+```{r}
+source("01_datos.R")
+source("02_simulador.R")
+source("03_experimentos_validacion.R")
+```
+
+# Resultados obtenidos
+
+Los resultados obtenidos incluyen:
+
+- Series temporales de tráfico
+- Histogramas
+- ECDF
+- Boxplots y violinplots
+- Métricas de congestión
+- Comparación entre datos reales y simulados
+- Validación estadística mediante prueba K-S
+
+# Interpretación general
+
+El modelo permitió observar cómo la congestión disminuye al aumentar la capacidad del servidor.
+
+Los escenarios con menor capacidad presentan mayor cantidad de exceso y mayor porcentaje de tiempo congestionado, mientras que capacidades altas logran procesar adecuadamente la mayoría de flujos generados.
+
+La simulación reproduce adecuadamente las tendencias generales observadas en los datos reales.
+
+# Conclusiones
+
+- El modelo SSED permitió representar el comportamiento temporal del tráfico bajo diferentes estados.
+- La simulación mostró diferencias importantes entre capacidades bajas y altas del servidor.
+- El uso de distribuciones empíricas permitió aproximar mejor el comportamiento real del tráfico.
+- La validación visual y estadística mostró coherencia entre datos reales y simulados.
+- El proyecto demuestra cómo la simulación puede utilizarse para evaluar desempeño de infraestructura sin afectar sistemas reales.
+
+# Trabajo futuro
+
+Como trabajo futuro se propone:
+
+- Incorporar modelos dinámicos de capacidad del servidor.
+- Evaluar políticas de mitigación de congestión.
+- Implementar colas explícitas dentro del sistema.
+- Analizar comportamiento multi-servidor.
+- Extender el modelo hacia simulación híbrida o simulación distribuida.
+
+# Referencias
+
+- Banks, J. et al. Discrete-Event System Simulation.
+- BCCC-cPacket-Cloud-DDoS-2024 Dataset.
+- Shafi et al. (2024).
+- Material del curso de Simulación Digital.
+
